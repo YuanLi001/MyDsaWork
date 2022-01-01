@@ -6,6 +6,8 @@ import java.math.BigDecimal;
 public class Calculator {
     static String[] symNum={"+","-","*","/"};
     static int[][] priority={{1,1,0,0,1},{1,1,0,0,1},{1,1,1,1,1},{1,1,1,1,1},{0,0,0,0,1}};
+
+
     public static String calculate(String[] strs){
         //首先，判断一下输入的字符串是否合法
         if(!legitimate(strs)){
@@ -42,23 +44,31 @@ public class Calculator {
     }
 
     public static void stackPush(OpStack sk, String s) {
+        //如果栈满，则增加空间
+        if( (sk.top+1)==sk.size ){
+            stcakIncrease(sk);
+        }
         sk.stack[sk.top]=s;
         sk.top++;
     }
+
     public static String pop(OpStack sk){
         String str=sk.stack[sk.top-1];
         sk.top--;
         return str;
     }
+
     public static String getTop(OpStack sk){
         return sk.stack[ sk.top-1 ];
     }
+
     public static boolean isSym(String s){
         if(s.equals("+") || s.equals("-") || s.equals("*") || s.equals("/") || s.equals("#")){
             return true;
         }
         return false;
     }
+
     public static boolean legitimate(String[] strs){
         int len=strs.length;
         //合法表达式长度必为奇数
@@ -88,6 +98,7 @@ public class Calculator {
 
         return true;
     }
+
     public static String[] endAdd(String[] strs,String s){
         String[] newStrs=new String[strs.length+1];
         for (int i = 0; i < strs.length; i++) {
@@ -96,11 +107,13 @@ public class Calculator {
         newStrs[strs.length]=s;
         return newStrs;
     }
+    //获得优先级，获得top对s的优先级
     public static int precede(String top,String s){
         int i=getSymIndex(top);
         int j=getSymIndex(s);
         return priority[i][j];
     }
+
     public static int getSymIndex(String s){
         int i=0;
         for (; i < symNum.length; i++) {
@@ -110,6 +123,7 @@ public class Calculator {
         }
         return i;
     }
+
     public static double operate(String num1,String num2,String sym){
         BigDecimal n1=new BigDecimal(num1);
         BigDecimal n2=new BigDecimal(num2);
@@ -125,4 +139,14 @@ public class Calculator {
         }
         return n3.doubleValue();
     }
+
+    public static void stcakIncrease(OpStack sk){
+        String[] oldStack=sk.stack;
+        sk.stack=new String[sk.size+10];
+        sk.size= sk.size+10;
+        for(int i=0;i<oldStack.length;i++){
+            sk.stack[i]=oldStack[i];
+        }
+    }
+
 }
